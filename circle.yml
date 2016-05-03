@@ -13,8 +13,8 @@ deployment:
   production:
     branch: master
     heroku:
-      appname: blop-api-service
+      appname: prod-blop-api
   staging:
     branch: develop
     heroku:
-      appname: blop-api-service-staging
+      appname: staging-blop-api
