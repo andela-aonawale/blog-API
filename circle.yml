@@ -13,8 +13,8 @@ deployment:
   production:
     branch: master
     heroku:
-      appname: skilltree-service
+      appname: blop-api-service
   staging:
     branch: develop
     heroku:
-      appname: skilltree-service-staging
+      appname: blop-api-service-staging

@@ -13,7 +13,6 @@ module.exports = {
     "linebreak-style": [2, "unix"],
     "quotes": [2, "single"],
     "semi": [2, "always"],
-    "no-var": [2],
     "camelcase": 1,
     "comma-spacing": [1, {"before": false, "after": true}],
     "key-spacing": [1, {"beforeColon": false, "afterColon": true}],

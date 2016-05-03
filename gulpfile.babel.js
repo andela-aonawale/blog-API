@@ -4,16 +4,17 @@ import gulp from 'gulp';
 import istanbul from 'gulp-istanbul';
 import mocha from 'mocha';
 import models from './server/models';
-import nodemon from 'gulp-nodemon';
 import codacy from 'gulp-codacy';
 import exit from 'gulp-exit';
 import babel from 'gulp-babel';
 import eslint from 'gulp-eslint';
-import logger from 'winston';
+import clean from 'gulp-clean';
+import shell from 'gulp-shell';
 
-let paths = {
+const paths = {
   test: 'test/**/*.js',
-  files: 'server/**'
+  files: 'server/**',
+  dist: 'dist'
 };
 
 gulp.task('db:sync', () => {
@@ -52,7 +53,14 @@ gulp.task('test:server', ['db:sync', 'coverage-setup'], () => {
     }));
 });
 
-gulp.task('build', () => {
+gulp.task('clean-scripts', () => {
+  return gulp.src(paths.dist, {read: false})
+    .pipe(clean({
+      force: true
+    }));
+});
+
+gulp.task('build', ['clean-scripts'], () => {
   return gulp.src(paths.files)
     .pipe(babel({
       presets: ['es2015']
@@ -60,17 +68,7 @@ gulp.task('build', () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('nodemon', ['build'], () => {
-  nodemon({
-    script: 'dist/index.js',
-    ext: 'js',
-    ignore: ['public/**', 'app/**', 'node_modules/**']
-  })
-  .on('restart', () => {
-    logger.log('>> node restart');
-  });
-});
-
-gulp.task('default', ['nodemon']);
+gulp.task('default', ['build'], shell.task(['npm start']));
 gulp.task('test', ['test:server', 'codacy']);
 gulp.task('lint', ['eslint']);
+gulp.task('clean', ['clean-scripts']);
