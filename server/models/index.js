@@ -2,7 +2,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import uuid from 'node-uuid';
 import Sequelize from 'sequelize';
 import config from './../config';
 
@@ -11,14 +10,7 @@ let
   sequelize,
   options = {
     logging: false,
-    dialect: 'postgres',
-    define: {
-      hooks: {
-        beforeCreate: (object) => {
-          object.id = uuid.v4();
-        }
-      }
-    }
+    dialect: 'postgres'
   };
 
 if (process.env.NODE_ENV === 'production') {

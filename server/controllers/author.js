@@ -53,7 +53,7 @@ export function destroy(req, res) {
 }
 
 export function readArticles(req, res) {
-  article.findAll({where: {author: req.params.id}})
+  article.findAll({where: {authorId: req.params.id}})
   .then(count => {
     res.status(200).json(count);
   })
@@ -63,7 +63,7 @@ export function readArticles(req, res) {
 }
 
 export function destroyArticles(req, res) {
-  article.destroy({where: {author: req.params.id}})
+  article.destroy({where: {authorId: req.params.id}})
   .then(count => {
     res.status(200).json(count);
   })

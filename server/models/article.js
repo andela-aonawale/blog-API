@@ -6,16 +6,14 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.UUID,
       unique: true,
       primaryKey: true,
-      field: 'id'
+      defaultValue: DataTypes.UUIDV4
     },
     title: {
       type: DataTypes.STRING,
-      field: 'title',
       allowNull: false
     },
     body: {
-      type: DataTypes.STRING,
-      field: 'body',
+      type: DataTypes.TEXT,
       allowNull: false
     }
   }, {

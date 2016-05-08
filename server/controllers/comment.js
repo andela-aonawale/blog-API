@@ -3,7 +3,7 @@
 import { comment } from './../models';
 
 export function index(req, res) {
-  comment.findAll({where: {article_id: req.params.post_id}})
+  comment.findAll({where: {articleId: req.params.id}})
   .then(comment => {
     res.status(200).json(comment);
   })

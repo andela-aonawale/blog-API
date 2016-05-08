@@ -6,16 +6,14 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.UUID,
       unique: true,
       primaryKey: true,
-      field: 'id'
+      defaultValue: DataTypes.UUIDV4
     },
     firstName: {
       type: DataTypes.STRING,
-      field: 'first_name',
       allowNull: false
     },
     lastName: {
       type: DataTypes.STRING,
-      field: 'last_name',
       allowNull: false
     }
   }, {
