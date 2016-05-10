@@ -2,7 +2,7 @@
 
 const
   should             = require('should'),
-  models             = require('./../../dist/models/'),
+  models             = require('./../../server/models/'),
   server             = require('./../helpers/app'),
   mock               = require('./../helpers/mock');
 

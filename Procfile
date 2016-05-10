@@ -1,1 +1,1 @@
-web: node --optimize_for_size --max_old_space_size=920 --gc_interval=100 index.js
+web: rm -rf dist; ./node_modules/.bin/babel server -d dist; node --optimize_for_size --max_old_space_size=920 --gc_interval=100 index.js

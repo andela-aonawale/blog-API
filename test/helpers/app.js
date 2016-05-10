@@ -4,7 +4,7 @@ const
   express            = require('express'),
   bodyParser         = require('body-parser'),
   request            = require('supertest'),
-  controllers        = require('./../../dist/controllers');
+  controllers        = require('./../../server/controllers');
 
 module.exports = (function () {
   let app = express();

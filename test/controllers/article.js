@@ -1,7 +1,7 @@
 'use strict';
 
 const
-  models             = require('./../../dist/models/'),
+  models             = require('./../../server/models/'),
   mock               = require('./../helpers/mock'),
   httpMocks          = require('node-mocks-http'),
   controller = require('./../../server/controllers/article');
