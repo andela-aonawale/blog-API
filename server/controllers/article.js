@@ -1,11 +1,11 @@
 'use strict';
 
-import { article } from './../models';
+import { article, comment } from './../models';
 
 export function index(req, res) {
   article.findAll()
-  .then(article => {
-    res.status(200).json(article);
+  .then(articles => {
+    res.status(200).json(articles);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -14,8 +14,8 @@ export function index(req, res) {
 
 export function create(req, res) {
   article.create(req.body)
-  .then(post => {
-    res.status(201).json(post);
+  .then(article => {
+    res.status(201).json(article);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -23,9 +23,9 @@ export function create(req, res) {
 }
 
 export function read(req, res) {
-  article.findById(req.params.id)
-  .then(post => {
-    res.status(200).json(post);
+  article.findById(req.params.id, {include: [comment]})
+  .then(article => {
+    res.status(200).json(article);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -45,7 +45,7 @@ export function update(req, res) {
 export function destroy(req, res) {
   article.destroy({where: {id: req.params.id}})
   .then(() => {
-    res.status(200);
+    res.sendStatus(200);
   })
   .catch(err => {
     res.status(404).json(err);

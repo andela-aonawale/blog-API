@@ -20,6 +20,10 @@ module.exports = function (sequelize, DataTypes) {
     classMethods: {
       associate: (models) => {
         Article.hasMany(models.comment, {
+          foreignKey: {
+            name: 'articleId',
+            allowNull: false
+          },
           onDelete: 'CASCADE'
         });
         Article.belongsTo(models.author, {

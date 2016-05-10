@@ -44,8 +44,8 @@ export function update(req, res) {
 
 export function destroy(req, res) {
   author.destroy({where: {id: req.params.id}})
-  .then(count => {
-    res.status(200).json(count);
+  .then(() => {
+    res.sendStatus(200);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -54,8 +54,8 @@ export function destroy(req, res) {
 
 export function readArticles(req, res) {
   article.findAll({where: {authorId: req.params.id}})
-  .then(count => {
-    res.status(200).json(count);
+  .then(articles => {
+    res.status(200).json(articles);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -64,8 +64,8 @@ export function readArticles(req, res) {
 
 export function destroyArticles(req, res) {
   article.destroy({where: {authorId: req.params.id}})
-  .then(count => {
-    res.status(200).json(count);
+  .then(() => {
+    res.sendStatus(200);
   })
   .catch(err => {
     res.status(404).json(err);

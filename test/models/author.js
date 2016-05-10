@@ -1,19 +1,21 @@
 'use strict';
 
-const models = require('./../../server/models/');
-const should = require('should');
+const
+  should = require('should'),
+  mock   = require('./../helpers/mock'),
+  models = require('./../../server/models/');
 
 describe('Author Model', function () {
   let createAuthor, mockAuthor;
 
   beforeEach(done => {
-    mockAuthor = {firstName: 'Ahmed', lastName: 'Ayo'};
+    mockAuthor = mock.author();
     createAuthor = models.author.create(mockAuthor);
     done();
   });
 
   afterEach(done => {
-    models.author.destroy({where: {}})
+    models.author.truncate({cascade: true})
     .then(() => done());
   });
 

@@ -52,7 +52,7 @@ export function start() {
     app.use(morgan('dev'));
   }
 
-  models.sequelize.sync({force: true}).then(() => {
+  models.sequelize.sync().then(() => {
     // initialize middlewares
     // middlewares(app);
     // initialize controller

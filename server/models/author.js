@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (sequelize, DataTypes) {
-  let User = sequelize.define('author', {
+  let Author = sequelize.define('author', {
     id: {
       type: DataTypes.UUID,
       unique: true,
@@ -31,11 +31,15 @@ module.exports = function (sequelize, DataTypes) {
     },
     classMethods: {
       associate: (models) => {
-        User.hasMany(models.article, {
+        Author.hasMany(models.article, {
+          foreignKey: {
+            name: 'authorId',
+            allowNull: false
+          },
           onDelete: 'CASCADE'
         });
       }
     }
   });
-  return User;
+  return Author;
 };

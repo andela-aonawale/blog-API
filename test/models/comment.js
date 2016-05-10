@@ -1,49 +1,47 @@
 'use strict';
 
-const models = require('./../../server/models/');
-const should = require('should');
+const
+  should = require('should'),
+  mock   = require('./../helpers/mock'),
+  models = require('./../../server/models/');
 
 describe('Comment Model', function () {
-  let mockComment, createComment, testArticle;
+  let mockComment, createComment, article;
 
   before(done => {
-    models.author.create({firstName: 'Ahmed', lastName: 'Ayo'})
+    models.author.create(mock.author())
     .then(author => {
-      models.article.create({
-        title: 'A good title',
-        body: 'Awesome Content',
-        authorId: author.id
-      })
-      .then(article => {
-        testArticle = article;
+      let mockArticle = mock.article();
+      mockArticle.authorId = author.id;
+      models.article.create(mockArticle)
+      .then(createdArticle => {
+        article = createdArticle;
         done();
       });
     });
   });
 
   after(done => {
-    models.article.destroy({where: {}})
+    models.article.truncate({cascade: true})
     .then(() => done());
   });
 
   beforeEach(done => {
-    mockComment = {
-      body: 'A f**king awesome comment',
-      articleId: testArticle.id
-    };
+    mockComment = mock.comment();
+    mockComment.articleId = article.id;
     createComment = models.comment.create(mockComment);
     done();
   });
 
   afterEach(done => {
-    models.comment.destroy({where: {}})
+    models.comment.truncate({cascade: true})
     .then(() => done());
   });
 
   it('creates a comment', done => {
     createComment.then(comment => {
       should.exist(comment);
-      comment.articleId.should.equal(testArticle.id);
+      comment.articleId.should.equal(article.id);
       done();
     });
   });
