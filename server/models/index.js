@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import config from './../config/config';
+import config from './../config';
 
 let
   db = {},

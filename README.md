@@ -34,10 +34,15 @@ You will need the following things properly installed on your computer.
         firebase/         --> node modules to authenticate server with Firebase
         redis/            --> node modules to access Redis data store
       middlewares/        --> Express app middlewares
+      scripts/            --> Express app scripts
       models/             --> backend data models (uses Sequelize ORM)
       workers/
     test/                 --> test files
-      server/             --> backend unit specs/tests
+      controllers/        --> backend controllers unit specs/tests
+      helpers/            --> backend tests helpers
+      middlewares/        --> backend middlewares unit specs/tests
+      models/             --> backend models unit specs/tests
+      routes/             --> backend routes unit specs/tests
     index.js              --> node server
 
 ## Installation

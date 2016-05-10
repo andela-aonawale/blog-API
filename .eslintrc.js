@@ -2,7 +2,8 @@ module.exports = {
   "parser": "babel-eslint",
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
@@ -13,10 +14,10 @@ module.exports = {
     "linebreak-style": [2, "unix"],
     "quotes": [2, "single"],
     "semi": [2, "always"],
-    "camelcase": 1,
+    // "camelcase": 1,
     "comma-spacing": [1, {"before": false, "after": true}],
     "key-spacing": [1, {"beforeColon": false, "afterColon": true}],
-    "max-nested-callbacks": [1, 3],
+    // "max-nested-callbacks": [1, 3],
     "new-cap": [1, {newIsCap: true, capIsNew: false}],
     "no-array-constructor": 1,
     "no-inline-comments": 1,
