@@ -1,10 +1,9 @@
 'use strict';
 
-const
-  should             = require('should'),
-  models             = require('./../../server/models/'),
-  server             = require('./../helpers/app'),
-  mock               = require('./../helpers/mock');
+import should from 'should';
+import mock from './../helpers/mock';
+import models from './../../server/models';
+import server from './../helpers/app';
 
 let article, author, createArticle;
 
@@ -57,6 +56,23 @@ describe('Article API endpoints: ', () => {
           should.exist(res.body);
           res.body.should.be.instanceof(Object);
         }, done);
+      });
+    });
+
+    it('fetch all articles belonging to an author', done => {
+      models.author.create(mock.author()).then(newAuthor => {
+        let articles = mock.bulkArticlesForAuthor(newAuthor, 15);
+        models.article.bulkCreate(articles).then(createdArticles => {
+          server
+          .get('/articles?authorId=' + newAuthor.id)
+          .expect('Content-Type', /json/)
+          .expect(200, done)
+          .expect(res => {
+            should.exist(res.body);
+            res.body.should.be.instanceof(Array);
+            res.body.should.have.length(createdArticles.length);
+          }, done);
+        });
       });
     });
   });

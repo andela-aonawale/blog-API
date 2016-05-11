@@ -3,9 +3,9 @@
 import { comment } from './../models';
 
 export function index(req, res) {
-  comment.findAll({where: {articleId: req.params.id}})
-  .then(comment => {
-    res.status(200).json(comment);
+  comment.findAll({where: {articleId: req.query.articleId}})
+  .then(comments => {
+    res.status(200).json(comments);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -23,7 +23,7 @@ export function create(req, res) {
 }
 
 export function read(req, res) {
-  comment.findOne({where: {id: req.params.id}})
+  comment.findById(req.params.id)
   .then(comment => {
     res.status(200).json(comment);
   })

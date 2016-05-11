@@ -4,8 +4,8 @@ import { author, article } from './../models';
 
 export function index(req, res) {
   author.findAll()
-  .then(author => {
-    res.status(200).json(author);
+  .then(authors => {
+    res.status(200).json(authors);
   })
   .catch(err => {
     res.status(404).json(err);
@@ -23,7 +23,7 @@ export function create(req, res) {
 }
 
 export function read(req, res) {
-  author.findById(req.params.id)
+  author.findById(req.params.id, {include: [article]})
   .then(author => {
     res.status(200).json(author);
   })
@@ -44,26 +44,6 @@ export function update(req, res) {
 
 export function destroy(req, res) {
   author.destroy({where: {id: req.params.id}})
-  .then(() => {
-    res.sendStatus(200);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
-}
-
-export function readArticles(req, res) {
-  article.findAll({where: {authorId: req.params.id}})
-  .then(articles => {
-    res.status(200).json(articles);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
-}
-
-export function destroyArticles(req, res) {
-  article.destroy({where: {authorId: req.params.id}})
   .then(() => {
     res.sendStatus(200);
   })

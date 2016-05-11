@@ -14,7 +14,7 @@ export default function (router) {
   .patch(articles.update)
   .delete(articles.destroy);
 
-  router.route('/articles/:id/comments')
+  router.route('/comments')
   .get(comments.index)
   .post(comments.create);
 
@@ -31,8 +31,4 @@ export default function (router) {
   .get(authors.read)
   .patch(authors.update)
   .delete(authors.destroy);
-
-  router.route('/authors/:id/articles')
-  .get(authors.readArticles)
-  .delete(authors.destroyArticles);
 }

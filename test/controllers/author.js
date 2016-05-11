@@ -1,36 +1,35 @@
 'use strict';
 
-const
-  models             = require('./../../server/models/'),
-  mock               = require('./../helpers/mock'),
-  httpMocks          = require('node-mocks-http'),
-  controller = require('./../../server/controllers/author');
+import { author } from './../../server/models';
+import mock from './../helpers/mock';
+import httpMocks from 'node-mocks-http';
+import * as authorController from './../../server/controllers/author';
 
 describe('Author Controller Test', () => {
 
-  let res, author;
+  let res, testAauthor;
 
   beforeEach(done => {
     res = httpMocks.createResponse(httpMocks.createResponse({
       eventEmitter: require('events').EventEmitter
     }));
     const authors = mock.bulkAuthors(5);
-    models.author.bulkCreate(authors)
+    author.bulkCreate(authors)
     .then(createdAuthors => {
-      author = createdAuthors[0];
+      testAauthor = createdAuthors[0];
       done();
     });
   });
 
   afterEach(done => {
-    models.author.truncate({cascade: true})
+    author.truncate({cascade: true})
     .then(() => done());
   });
 
   describe('index', () => {
     it('returns all authors', done => {
       let req = httpMocks.createRequest();
-      controller.index(req, res);
+      authorController.index(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.have.length(5);
@@ -43,7 +42,7 @@ describe('Author Controller Test', () => {
       let req = httpMocks.createRequest({
         body: mock.author()
       });
-      controller.create(req, res);
+      authorController.create(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.be.ok;
@@ -57,14 +56,14 @@ describe('Author Controller Test', () => {
     it('returns an author with the correct id', done => {
       let req = httpMocks.createRequest({
         params: {
-          id: author.id
+          id: testAauthor.id
         }
       });
-      controller.read(req, res);
+      authorController.read(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.be.ok;
-        data.name.should.equal(author.name);
+        data.name.should.equal(testAauthor.name);
         res.statusCode.should.equal(200);
         done();
       });
@@ -76,7 +75,7 @@ describe('Author Controller Test', () => {
           id: 'a5b335bc-0508-47e7-81ed-8959c1450fa0'
         }
       });
-      controller.read(req, res);
+      authorController.read(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.not.be.ok;
@@ -91,26 +90,11 @@ describe('Author Controller Test', () => {
           id: '01'
         }
       });
-      controller.read(req, res);
+      authorController.read(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.not.be.ok;
         res.statusCode.should.equal(404);
-        done();
-      });
-    });
-
-    it('returns all articles belonging to an author with the correct id', done => {
-      let req = httpMocks.createRequest({
-        params: {
-          id: author.id
-        }
-      });
-      controller.readArticles(req, res);
-      res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.be.instanceof(Array);
-        res.statusCode.should.equal(200);
         done();
       });
     });
@@ -123,11 +107,11 @@ describe('Author Controller Test', () => {
     it('updates and returns an author with the correct id', done => {
       let req = httpMocks.createRequest({
         params: {
-          id: author.id
+          id: testAauthor.id
         },
         body: updatedAuthor
       });
-      controller.update(req, res);
+      authorController.update(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.be.ok;
@@ -143,7 +127,7 @@ describe('Author Controller Test', () => {
           id: '01'
         }
       });
-      controller.update(req, res);
+      authorController.update(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.not.be.ok;
@@ -157,10 +141,10 @@ describe('Author Controller Test', () => {
     it('deletes an author with the correct id', done => {
       let req = httpMocks.createRequest({
         params: {
-          id: author.id
+          id: testAauthor.id
         }
       });
-      controller.destroy(req, res);
+      authorController.destroy(req, res);
       res.on('end', () => {
         res.statusCode.should.equal(200);
         done();
@@ -173,24 +157,11 @@ describe('Author Controller Test', () => {
           id: '01'
         }
       });
-      controller.destroy(req, res);
+      authorController.destroy(req, res);
       res.on('end', () => {
         var data = JSON.parse(res._getData());
         data.should.not.be.ok;
         res.statusCode.should.equal(404);
-        done();
-      });
-    });
-
-    it('deletes all articles belonging to an author with the correct id', done => {
-      let req = httpMocks.createRequest({
-        params: {
-          id: author.id
-        }
-      });
-      controller.destroyArticles(req, res);
-      res.on('end', () => {
-        res.statusCode.should.equal(200);
         done();
       });
     });

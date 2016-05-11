@@ -27,6 +27,7 @@ module.exports = function (sequelize, DataTypes) {
           onDelete: 'CASCADE'
         });
         Article.belongsTo(models.author, {
+          as: 'createdBy',
           foreignKey: {
             name: 'authorId',
             allowNull: false

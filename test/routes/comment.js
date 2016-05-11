@@ -1,14 +1,13 @@
 'use strict';
 
-const
-  should             = require('should'),
-  models             = require('./../../server/models/'),
-  server             = require('./../helpers/app'),
-  mock               = require('./../helpers/mock');
+import should from 'should';
+import mock from './../helpers/mock';
+import models from './../../server/models';
+import server from './../helpers/app';
 
 let comment, article, createComment;
 
-describe('Comment API endpoints: ', () => {
+describe('Comment Route Tests: ', () => {
 
   before(done => {
     models.author.create(mock.author())
@@ -43,10 +42,10 @@ describe('Comment API endpoints: ', () => {
     .then(() => done());
   });
 
-  describe('GET /articles/:id/comments', () => {
+  describe('GET /comments', () => {
     it('fetch all comments that belongs to an article', done => {
       server
-      .get('/articles/' + article.id + '/comments')
+      .get('/comments?articleId=' + article.id)
       .expect('Content-Type', /json/)
       .expect(200, done)
       .expect(res => {
@@ -67,12 +66,23 @@ describe('Comment API endpoints: ', () => {
         }, done);
       });
     });
+
+    it('returns no comment when the articleId query is missing', done => {
+      server
+      .get('/comments')
+      .expect('Content-Type', /json/)
+      .expect(200, done)
+      .expect(res => {
+        should.exist(res.body);
+        res.body.should.have.length(0);
+      }, done);
+    });
   });
 
-  describe('POST /articles/:id/comments', () => {
+  describe('POST /comments', () => {
     it('creates a new comment', done => {
       server
-      .post('/articles/' + article.id + '/comments')
+      .post('/comments')
       .set('Content-Type', 'application/json')
       .send(comment)
       .expect('Content-Type', /json/)
@@ -85,7 +95,7 @@ describe('Comment API endpoints: ', () => {
 
     it('does not create a comment without an article', done => {
       server
-      .post('/articles/' + article.id + '/comments')
+      .post('/comments')
       .set('Content-Type', 'application/json')
       .send(mock.comment())
       .expect(404, done);

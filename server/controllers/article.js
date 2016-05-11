@@ -1,9 +1,10 @@
 'use strict';
 
-import { article, comment } from './../models';
+import { article, comment, author } from './../models';
 
 export function index(req, res) {
-  article.findAll()
+  const options = req.query.authorId ? {where: {authorId: req.query.authorId}} : {};
+  article.findAll(options)
   .then(articles => {
     res.status(200).json(articles);
   })
@@ -23,7 +24,7 @@ export function create(req, res) {
 }
 
 export function read(req, res) {
-  article.findById(req.params.id, {include: [comment]})
+  article.findById(req.params.id, {include: [comment, {model: author, as: 'createdBy'}]})
   .then(article => {
     res.status(200).json(article);
   })

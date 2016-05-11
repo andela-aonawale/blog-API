@@ -1,9 +1,8 @@
 'use strict';
 
-const
-  should = require('should'),
-  mock   = require('./../helpers/mock'),
-  models = require('./../../server/models/');
+import should from 'should';
+import mock from './../helpers/mock';
+import models from './../../server/models';
 
 describe('Comment Model', function () {
   let mockComment, createComment, article;

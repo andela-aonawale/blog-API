@@ -49,7 +49,6 @@
     "crypto": "0.0.3",
     "dotenv": "2.0.0",
     "express": "4.13.4",
-    "foreman": "1.4.1",
     "lodash": "4.11.2",
     "method-override": "2.3.5",
     "moment": "2.13.0",

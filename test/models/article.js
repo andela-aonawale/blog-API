@@ -1,36 +1,35 @@
 'use strict';
 
-const
-  should = require('should'),
-  mock   = require('./../helpers/mock'),
-  models = require('./../../server/models/');
+import should from 'should';
+import mock from './../helpers/mock';
+import { author, article } from './../../server/models';
 
-describe('Article Model', function () {
+describe('Article Model', () => {
 
   let mockArticle, createArticle, testAuthor;
 
   before(done => {
-    models.author.create(mock.author())
-    .then(author => {
-      testAuthor = author;
+    author.create(mock.author())
+    .then(createdAuthor => {
+      testAuthor = createdAuthor;
       done();
     });
   });
 
   after(done => {
-    models.author.truncate({cascade: true})
+    author.truncate({cascade: true})
     .then(() => done());
   });
 
   beforeEach(done => {
     mockArticle = mock.article();
     mockArticle.authorId = testAuthor.id;
-    createArticle = models.article.create(mockArticle);
+    createArticle = article.create(mockArticle);
     done();
   });
 
   afterEach(done => {
-    models.article.truncate({cascade: true})
+    article.truncate({cascade: true})
     .then(() => done());
   });
 
@@ -44,7 +43,7 @@ describe('Article Model', function () {
 
   it('finds an article', done => {
     createArticle.then(createdArticle => {
-      models.article.findById(createdArticle.id)
+      article.findById(createdArticle.id)
       .then(article => {
         should.exist(article);
         article.id.should.equal(createdArticle.id);
@@ -67,9 +66,9 @@ describe('Article Model', function () {
   });
 
   it('deletes an article', function (done) {
-    createArticle.then(article => {
-      article.destroy().then(() => {
-        models.article.findById(article.id)
+    createArticle.then(createdArticle => {
+      createdArticle.destroy().then(() => {
+        article.findById(createdArticle.id)
         .then(article => {
           should.not.exist(article);
           done();

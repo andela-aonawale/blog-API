@@ -1,25 +1,24 @@
 'use strict';
 
-const
-  models             = require('./../../server/models/'),
-  mock               = require('./../helpers/mock'),
-  httpMocks          = require('node-mocks-http'),
-  controller = require('./../../server/controllers/article');
+import { article, author } from './../../server/models';
+import mock from './../helpers/mock';
+import httpMocks from 'node-mocks-http';
+import * as articleController from './../../server/controllers/article';
 
 describe('Article Controller Test', () => {
 
-  let res, author, article;
+  let res, testAuthor, testArticle;
 
   before(done => {
-    models.author.create(mock.author())
+    author.create(mock.author())
     .then(createdAuthor => {
-      author = createdAuthor;
+      testAuthor = createdAuthor;
       done();
     });
   });
 
   after(done => {
-    models.author.truncate({cascade: true})
+    author.truncate({cascade: true})
     .then(() => done());
   });
 
@@ -27,23 +26,23 @@ describe('Article Controller Test', () => {
     res = httpMocks.createResponse(httpMocks.createResponse({
       eventEmitter: require('events').EventEmitter
     }));
-    let articles = mock.bulkArticlesForAuthor(author, 5);
-    models.article.bulkCreate(articles)
+    let articles = mock.bulkArticlesForAuthor(testAuthor, 5);
+    article.bulkCreate(articles)
     .then(createdArticles => {
-      article = createdArticles[0];
+      testArticle = createdArticles[0];
       done();
     });
   });
 
   afterEach(done => {
-    models.article.truncate({cascade: true})
+    article.truncate({cascade: true})
     .then(() => done());
   });
 
   describe('index', () => {
     it('returns all articles', done => {
       let req = httpMocks.createRequest();
-      controller.index(req, res);
+      articleController.index(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.have.length(5);
@@ -54,15 +53,30 @@ describe('Article Controller Test', () => {
 
     it('creates an article', done => {
       let article = mock.article();
-      article.authorId = author.id;
+      article.authorId = testAuthor.id;
       let req = httpMocks.createRequest({
         body: article
       });
-      controller.create(req, res);
+      articleController.create(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.be.ok;
         res.statusCode.should.equal(201);
+        done();
+      });
+    });
+
+    it('returns all articles belonging to an author with the correct id', done => {
+      let req = httpMocks.createRequest({
+        query: {
+          authorId: testAuthor.id
+        }
+      });
+      articleController.index(req, res);
+      res.on('end', () => {
+        var data = JSON.parse(res._getData());
+        data.should.be.instanceof(Array);
+        res.statusCode.should.equal(200);
         done();
       });
     });
@@ -72,14 +86,14 @@ describe('Article Controller Test', () => {
     it('returns an article with the correct id', done => {
       let req = httpMocks.createRequest({
         params: {
-          id: article.id
+          id: testArticle.id
         }
       });
-      controller.read(req, res);
+      articleController.read(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.be.ok;
-        data.title.should.equal(article.title);
+        data.title.should.equal(testArticle.title);
         res.statusCode.should.equal(200);
         done();
       });
@@ -91,7 +105,7 @@ describe('Article Controller Test', () => {
           id: 'a5b335bc-0508-47e7-81ed-8959c1450fa0'
         }
       });
-      controller.read(req, res);
+      articleController.read(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.not.be.ok;
@@ -106,7 +120,7 @@ describe('Article Controller Test', () => {
           id: '01'
         }
       });
-      controller.read(req, res);
+      articleController.read(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.not.be.ok;
@@ -123,11 +137,11 @@ describe('Article Controller Test', () => {
     it('updates and returns an article with the correct id', done => {
       let req = httpMocks.createRequest({
         params: {
-          id: article.id
+          id: testArticle.id
         },
         body: updatedArticle
       });
-      controller.update(req, res);
+      articleController.update(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.be.ok;
@@ -143,7 +157,7 @@ describe('Article Controller Test', () => {
           id: '01'
         }
       });
-      controller.update(req, res);
+      articleController.update(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.not.be.ok;
@@ -157,10 +171,10 @@ describe('Article Controller Test', () => {
     it('deletes an article with the correct id', done => {
       let req = httpMocks.createRequest({
         params: {
-          id: article.id
+          id: testArticle.id
         }
       });
-      controller.destroy(req, res);
+      articleController.destroy(req, res);
       res.on('end', () => {
         res.statusCode.should.equal(200);
         done();
@@ -173,7 +187,7 @@ describe('Article Controller Test', () => {
           id: '01'
         }
       });
-      controller.destroy(req, res);
+      articleController.destroy(req, res);
       res.on('end', () => {
         let data = JSON.parse(res._getData());
         data.should.not.be.ok;

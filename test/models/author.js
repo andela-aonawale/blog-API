@@ -1,21 +1,20 @@
 'use strict';
 
-const
-  should = require('should'),
-  mock   = require('./../helpers/mock'),
-  models = require('./../../server/models/');
+import should from 'should';
+import mock from './../helpers/mock';
+import { author } from './../../server/models';
 
 describe('Author Model', function () {
   let createAuthor, mockAuthor;
 
   beforeEach(done => {
     mockAuthor = mock.author();
-    createAuthor = models.author.create(mockAuthor);
+    createAuthor = author.create(mockAuthor);
     done();
   });
 
   afterEach(done => {
-    models.author.truncate({cascade: true})
+    author.truncate({cascade: true})
     .then(() => done());
   });
 
@@ -28,7 +27,7 @@ describe('Author Model', function () {
 
   it('finds an author', done => {
     createAuthor.then(createdAuthor => {
-      models.author.findById(createdAuthor.id)
+      author.findById(createdAuthor.id)
       .then(author => {
         should.exist(author);
         done();
@@ -50,9 +49,9 @@ describe('Author Model', function () {
   });
 
   it('deletes an author', function (done) {
-    createAuthor.then(author => {
-      author.destroy().then(() => {
-        models.author.findById(author.id)
+    createAuthor.then(createdAuthor => {
+      createdAuthor.destroy().then(() => {
+        author.findById(createdAuthor.id)
         .then(author => {
           should.not.exist(author);
           done();
