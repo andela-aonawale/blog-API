@@ -26,8 +26,8 @@ describe('Author Route Tests: ', () => {
       .expect('Content-Type', /json/)
       .expect(200, done)
       .expect(res => {
-        should.exist(res.body);
-        res.body.should.be.instanceof(Array);
+        should.exist(res.body.data);
+        res.body.data.should.be.instanceof(Array);
       }, done);
     });
 
@@ -38,8 +38,8 @@ describe('Author Route Tests: ', () => {
         .expect('Content-Type', /json/)
         .expect(200, done)
         .expect(res => {
-          should.exist(res.body);
-          res.body.should.be.instanceof(Object);
+          should.exist(res.body.data);
+          res.body.data.should.be.instanceof(Object);
         }, done);
       });
     });
@@ -54,8 +54,8 @@ describe('Author Route Tests: ', () => {
       .expect('Content-Type', /json/)
       .expect(201, done)
       .expect(res => {
-        should.exist(res.body);
-        res.body.should.be.instanceof(Object);
+        should.exist(res.body.data);
+        res.body.data.should.be.instanceof(Object);
       }, done);
     });
   });
@@ -70,8 +70,8 @@ describe('Author Route Tests: ', () => {
         .expect('Content-Type', /json/)
         .expect(200, done)
         .expect(res => {
-          should.exist(res.body);
-          res.body.should.have.property('firstName', 'Dab');
+          should.exist(res.body.data);
+          res.body.data.attributes.should.have.property('firstName', 'Dab');
         }, done);
       });
     });
@@ -82,7 +82,7 @@ describe('Author Route Tests: ', () => {
       models.author.create(author).then(author => {
         server
           .delete('/authors/' + author.id)
-          .expect(200, done());
+          .expect(204, done());
       });
     });
   });

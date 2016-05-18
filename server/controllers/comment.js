@@ -1,53 +1,40 @@
 'use strict';
 
+import { sendError, errors } from './error';
 import { comment } from './../models';
 
 export function index(req, res) {
   comment.findAll({where: {articleId: req.query.articleId}})
-  .then(comments => {
-    res.status(200).json(comments);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .then(comments => res.status(200).json(comment.serialize(comments)))
+  .catch(err => errors(err, res));
 }
 
 export function create(req, res) {
   comment.create(req.body)
-  .then(comment => {
-    res.status(201).json(comment);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .then(comment => res.status(201).json(comment.serialized()))
+  .catch(err => errors(err, res));
 }
 
 export function read(req, res) {
   comment.findById(req.params.id)
   .then(comment => {
-    res.status(200).json(comment);
+    if (!comment) return sendError(404, req, res);
+    res.status(200).json(comment.serialized());
   })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .catch(err => errors(err, res));
 }
 
 export function update(req, res) {
   comment.update(req.body, {where: {id: req.params.id}, returning: true})
   .then(row => {
-    res.status(200).json(row[1][0]);
+    if (!row[1][0]) sendError(404, req, res);
+    res.status(200).json(row[1][0].serialized());
   })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .catch(err => errors(err, res));
 }
 
 export function destroy(req, res) {
   comment.destroy({where: {id: req.params.id}})
-  .then(() => {
-    res.sendStatus(200);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .then(() => res.sendStatus(204))
+  .catch(err =>  errors(err, res));
 }

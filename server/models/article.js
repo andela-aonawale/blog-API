@@ -27,7 +27,6 @@ module.exports = function (sequelize, DataTypes) {
           onDelete: 'CASCADE'
         });
         Article.belongsTo(models.author, {
-          as: 'createdBy',
           foreignKey: {
             name: 'authorId',
             allowNull: false
@@ -36,6 +35,9 @@ module.exports = function (sequelize, DataTypes) {
           onUpdate: 'CASCADE'
         });
       }
+    },
+    defaultScope: {
+      exclude: ['authorId']
     }
   });
   return Article;

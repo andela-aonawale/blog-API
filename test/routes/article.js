@@ -41,8 +41,8 @@ describe('Article API endpoints: ', () => {
       .expect('Content-Type', /json/)
       .expect(200, done)
       .expect(res => {
-        should.exist(res.body);
-        res.body.should.be.instanceof(Array);
+        should.exist(res.body.data);
+        res.body.data.should.be.instanceof(Array);
       }, done);
     });
 
@@ -53,8 +53,8 @@ describe('Article API endpoints: ', () => {
         .expect('Content-Type', /json/)
         .expect(200, done)
         .expect(res => {
-          should.exist(res.body);
-          res.body.should.be.instanceof(Object);
+          should.exist(res.body.data);
+          res.body.data.should.be.instanceof(Object);
         }, done);
       });
     });
@@ -68,9 +68,9 @@ describe('Article API endpoints: ', () => {
           .expect('Content-Type', /json/)
           .expect(200, done)
           .expect(res => {
-            should.exist(res.body);
-            res.body.should.be.instanceof(Array);
-            res.body.should.have.length(createdArticles.length);
+            should.exist(res.body.data);
+            res.body.data.should.be.instanceof(Array);
+            res.body.data.should.have.length(createdArticles.length);
           }, done);
         });
       });
@@ -86,8 +86,8 @@ describe('Article API endpoints: ', () => {
       .expect('Content-Type', /json/)
       .expect(201, done)
       .expect(res => {
-        should.exist(res.body);
-        res.body.should.be.instanceof(Object);
+        should.exist(res.body.data);
+        res.body.data.should.be.instanceof(Object);
       }, done);
     });
 
@@ -97,7 +97,7 @@ describe('Article API endpoints: ', () => {
       .set('Content-Type', 'application/json')
       .send(mock.article())
       .expect('Content-Type', /json/)
-      .expect(404, done);
+      .expect(403, done);
     });
   });
 
@@ -111,8 +111,8 @@ describe('Article API endpoints: ', () => {
         .expect('Content-Type', /json/)
         .expect(200, done)
         .expect(res => {
-          should.exist(res.body);
-          res.body.should.have.property('title', 'Updated Title');
+          should.exist(res.body.data);
+          res.body.data.attributes.should.have.property('title', 'Updated Title');
         }, done);
       });
     });
@@ -123,7 +123,7 @@ describe('Article API endpoints: ', () => {
       createArticle.then(article => {
         server
         .delete('/articles/' + article.id)
-        .expect(200, done());
+        .expect(204, done());
       });
     });
   });

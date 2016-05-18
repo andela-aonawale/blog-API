@@ -1,54 +1,42 @@
 'use strict';
 
+import { sendError, errors } from './error';
 import { article, comment, author } from './../models';
 
 export function index(req, res) {
   const options = req.query.authorId ? {where: {authorId: req.query.authorId}} : {};
+  options.include = [author];
   article.findAll(options)
-  .then(articles => {
-    res.status(200).json(articles);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .then(articles => res.status(200).json(article.serialize(articles)))
+  .catch(err => errors(err, res));
 }
 
 export function create(req, res) {
   article.create(req.body)
-  .then(article => {
-    res.status(201).json(article);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .then(article => res.status(201).json(article.serialized()))
+  .catch(err => errors(err, res));
 }
 
 export function read(req, res) {
-  article.findById(req.params.id, {include: [comment, {model: author, as: 'createdBy'}]})
+  article.findById(req.params.id, {include: [comment, author]})
   .then(article => {
-    res.status(200).json(article);
+    if (!article) return sendError(404, req, res);
+    res.status(200).json(article.serialized());
   })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .catch(err => errors(err, res));
 }
 
 export function update(req, res) {
   article.update(req.body, {where: {id: req.params.id}, returning: true})
   .then(row => {
-    res.status(200).json(row[1][0]);
+    if (!row[1][0]) sendError(404, req, res);
+    res.status(200).json(row[1][0].serialized());
   })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .catch(err => errors(err, res));
 }
 
 export function destroy(req, res) {
   article.destroy({where: {id: req.params.id}})
-  .then(() => {
-    res.sendStatus(200);
-  })
-  .catch(err => {
-    res.status(404).json(err);
-  });
+  .then(() => res.sendStatus(204))
+  .catch(err => errors(err, res));
 }

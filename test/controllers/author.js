@@ -31,8 +31,8 @@ describe('Author Controller Test', () => {
       let req = httpMocks.createRequest();
       authorController.index(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.have.length(5);
+        var result = JSON.parse(res._getData());
+        result.data.should.have.length(5);
         res.statusCode.should.equal(200);
         done();
       });
@@ -44,8 +44,8 @@ describe('Author Controller Test', () => {
       });
       authorController.create(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.be.ok;
+        var result = JSON.parse(res._getData());
+        result.data.should.be.ok;
         res.statusCode.should.equal(201);
         done();
       });
@@ -61,15 +61,15 @@ describe('Author Controller Test', () => {
       });
       authorController.read(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.be.ok;
-        data.name.should.equal(testAauthor.name);
+        var result = JSON.parse(res._getData());
+        result.data.should.be.ok;
+        result.data.attributes.name.should.equal(testAauthor.name);
         res.statusCode.should.equal(200);
         done();
       });
     });
 
-    it('returns 404 for author with an incorrect id', done => {
+    it('returns 404 for author that is not in the database', done => {
       let req = httpMocks.createRequest({
         params: {
           id: 'a5b335bc-0508-47e7-81ed-8959c1450fa0'
@@ -77,14 +77,13 @@ describe('Author Controller Test', () => {
       });
       authorController.read(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.not.be.ok;
+        res._getData().should.not.be.ok;
         res.statusCode.should.equal(404);
         done();
       });
     });
 
-    it('returns 404 for author with an id that is not UUIDv4', done => {
+    it('returns 403 for author with an id that is not UUIDv4', done => {
       let req = httpMocks.createRequest({
         params: {
           id: '01'
@@ -92,9 +91,7 @@ describe('Author Controller Test', () => {
       });
       authorController.read(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.not.be.ok;
-        res.statusCode.should.equal(404);
+        res.statusCode.should.equal(403);
         done();
       });
     });
@@ -113,15 +110,15 @@ describe('Author Controller Test', () => {
       });
       authorController.update(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.be.ok;
-        data.firstName.should.be.equal('Updated');
+        var result = JSON.parse(res._getData());
+        result.data.should.be.ok;
+        result.data.attributes.firstName.should.be.equal('Updated');
         res.statusCode.should.equal(200);
         done();
       });
     });
 
-    it('returns 404 when updating author with an id that is not UUIDv4', done => {
+    it('returns 403 when updating author with an id that is not UUIDv4', done => {
       let req = httpMocks.createRequest({
         params: {
           id: '01'
@@ -129,9 +126,7 @@ describe('Author Controller Test', () => {
       });
       authorController.update(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.not.be.ok;
-        res.statusCode.should.equal(404);
+        res.statusCode.should.equal(403);
         done();
       });
     });
@@ -146,12 +141,12 @@ describe('Author Controller Test', () => {
       });
       authorController.destroy(req, res);
       res.on('end', () => {
-        res.statusCode.should.equal(200);
+        res.statusCode.should.equal(204);
         done();
       });
     });
 
-    it('returns 404 when deleting author with an id that is not UUIDv4', done => {
+    it('returns 403 when deleting author with an id that is not UUIDv4', done => {
       let req = httpMocks.createRequest({
         params: {
           id: '01'
@@ -159,9 +154,7 @@ describe('Author Controller Test', () => {
       });
       authorController.destroy(req, res);
       res.on('end', () => {
-        var data = JSON.parse(res._getData());
-        data.should.not.be.ok;
-        res.statusCode.should.equal(404);
+        res.statusCode.should.equal(403);
         done();
       });
     });

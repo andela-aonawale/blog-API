@@ -49,8 +49,8 @@ describe('Comment Route Tests: ', () => {
       .expect('Content-Type', /json/)
       .expect(200, done)
       .expect(res => {
-        should.exist(res.body);
-        res.body.should.be.instanceof(Array);
+        should.exist(res.body.data);
+        res.body.data.should.be.instanceof(Array);
       }, done);
     });
 
@@ -61,8 +61,8 @@ describe('Comment Route Tests: ', () => {
         .expect('Content-Type', /json/)
         .expect(200, done)
         .expect(res => {
-          should.exist(res.body);
-          res.body.should.be.instanceof(Object);
+          should.exist(res.body.data);
+          res.body.data.should.be.instanceof(Object);
         }, done);
       });
     });
@@ -73,8 +73,8 @@ describe('Comment Route Tests: ', () => {
       .expect('Content-Type', /json/)
       .expect(200, done)
       .expect(res => {
-        should.exist(res.body);
-        res.body.should.have.length(0);
+        should.exist(res.body.data);
+        res.body.data.should.have.length(0);
       }, done);
     });
   });
@@ -98,7 +98,7 @@ describe('Comment Route Tests: ', () => {
       .post('/comments')
       .set('Content-Type', 'application/json')
       .send(mock.comment())
-      .expect(404, done);
+      .expect(403, done);
     });
   });
 
@@ -113,7 +113,7 @@ describe('Comment Route Tests: ', () => {
         .expect(200, done)
         .expect(res => {
           should.exist(res.body);
-          res.body.should.have.property('body', 'Updated Body');
+          res.body.data.attributes.should.have.property('body', 'Updated Body');
         }, done);
       });
     });
@@ -124,7 +124,7 @@ describe('Comment Route Tests: ', () => {
       createComment.then(comment => {
         server
         .delete('/comments/' + comment.id)
-        .expect(200, done());
+        .expect(204, done());
       });
     });
   });

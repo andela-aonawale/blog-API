@@ -16,7 +16,6 @@ module.exports = function (sequelize, DataTypes) {
     classMethods: {
       associate: (models) => {
         Comment.belongsTo(models.article, {
-          as: 'Article',
           foreignKey: {
             name: 'articleId',
             allowNull: false
@@ -25,6 +24,9 @@ module.exports = function (sequelize, DataTypes) {
           onUpdate: 'CASCADE'
         });
       }
+    },
+    defaultScope: {
+      exclude: ['articleId']
     }
   });
   return Comment;
