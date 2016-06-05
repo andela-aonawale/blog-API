@@ -63,7 +63,7 @@ describe('Author Controller Test', () => {
       res.on('end', () => {
         var result = JSON.parse(res._getData());
         result.data.should.be.ok;
-        result.data.attributes.name.should.equal(testAauthor.name);
+        result.data.attributes.fullName.should.equal(testAauthor.fullName);
         res.statusCode.should.equal(200);
         done();
       });
@@ -99,7 +99,7 @@ describe('Author Controller Test', () => {
 
   describe('update', () => {
     const updatedAuthor = {
-      name: 'Updated Author'
+      fullName: 'Updated Author'
     };
     it('updates and returns an author with the correct id', done => {
       let req = httpMocks.createRequest({

@@ -15,13 +15,14 @@ module.exports = function (sequelize, DataTypes) {
     body: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    excerpt: {
+      type: DataTypes.VIRTUAL,
+      get: function () {
+        return this.body ? this.body.substring(0, this.body.indexOf('\n\n')) : '';
+      }
     }
   }, {
-    getterMethods: {
-      excerpt: function () {
-        return this.body.substring(0, this.body.indexOf('\n\n'));
-      }
-    },
     classMethods: {
       associate: (models) => {
         Article.hasMany(models.comment, {

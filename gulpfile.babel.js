@@ -18,7 +18,7 @@ const paths = {
   coverage: 'test/coverage'
 };
 
-gulp.task('db:sync', () => models.sequelize.sync().then(() => exit()));
+gulp.task('db:sync', () => models.sequelize.sync({force: true}).then(() => exit()));
 
 gulp.task('eslint', () => {
   return gulp.src(paths.files)
