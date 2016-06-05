@@ -17,6 +17,11 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     }
   }, {
+    getterMethods: {
+      excerpt: function () {
+        return this.body.substring(0, this.body.indexOf('\n\n'));
+      }
+    },
     classMethods: {
       associate: (models) => {
         Article.hasMany(models.comment, {

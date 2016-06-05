@@ -18,12 +18,12 @@ module.exports = function (sequelize, DataTypes) {
     }
   }, {
     getterMethods: {
-      name: function () {
+      fullName: function () {
         return `${this.firstName} ${this.lastName}`;
       }
     },
     setterMethods: {
-      name: function (value) {
+      fullName: function (value) {
         let names = value.split(' ');
         this.setDataValue('firstName', names.slice(0, -1).join(' '));
         this.setDataValue('lastName', names.slice(-1).join(' '));
