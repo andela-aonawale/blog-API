@@ -3,14 +3,30 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import config from './../config/config';
+import config from './../config';
+import serializer from './../serializers';
+require('sequelize-values')();
 
 let
   db = {},
   sequelize,
   options = {
     logging: false,
-    dialect: 'postgres'
+    dialect: 'postgres',
+    define: {
+      classMethods: {
+        serialize: function (models, options) {
+          const name = this.getTableName();
+          return serializer.serialize(name, Sequelize.getValues(models), options);
+        }
+      },
+      instanceMethods: {
+        serialized: function (options) {
+          const name = this.Model.getTableName();
+          return serializer.serialize(name, this.getValues(), options);
+        }
+      }
+    }
   };
 
 if (process.env.NODE_ENV === 'production') {

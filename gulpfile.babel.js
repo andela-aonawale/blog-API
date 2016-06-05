@@ -2,7 +2,7 @@
 
 import gulp from 'gulp';
 import istanbul from 'gulp-istanbul';
-import mocha from 'mocha';
+import mocha from 'gulp-mocha';
 import models from './server/models';
 import codacy from 'gulp-codacy';
 import exit from 'gulp-exit';
@@ -14,12 +14,11 @@ import shell from 'gulp-shell';
 const paths = {
   test: 'test/**/*.js',
   files: 'server/**',
-  dist: 'dist'
+  dist: 'dist',
+  coverage: 'test/coverage'
 };
 
-gulp.task('db:sync', () => {
-  return models.sequelize.sync().then(exit());
-});
+gulp.task('db:sync', () => models.sequelize.sync({force: true}).then(() => exit()));
 
 gulp.task('eslint', () => {
   return gulp.src(paths.files)
@@ -27,10 +26,17 @@ gulp.task('eslint', () => {
     .pipe(eslint.format());
 });
 
-gulp.task('coverage-setup', () => {
-  return gulp.src(['./app/**/*.js'])
+gulp.task('clean:coverage', () => {
+  return gulp.src(paths.coverage, {read: false})
+    .pipe(clean({
+      force: true
+    }));
+});
+
+gulp.task('coverage:setup', ['clean:coverage'], () => {
+  return gulp.src([`${paths.dist}/**/*.js`])
     .pipe(istanbul())
-    .pipe(istanbul.hooqkRequire());
+    .pipe(istanbul.hookRequire());
 });
 
 gulp.task('codacy', ['test:server'], () => {
@@ -42,25 +48,32 @@ gulp.task('codacy', ['test:server'], () => {
     .pipe(exit());
 });
 
-gulp.task('test:server', ['db:sync', 'coverage-setup'], () => {
+gulp.task('test:server', ['db:sync', 'coverage:setup'], () => {
   return gulp.src(paths.test)
+    .pipe(babel({
+      presets: ['es2015']
+    }))
     .pipe(mocha({
       timeout: 30000,
-      reporter: 'spec'
+      reporter: 'spec',
+      compilers: [
+        'js:babel-core/register'
+      ],
+      require: ['babel-polyfill']
     }))
     .pipe(istanbul.writeReports({
-      dir: './test/coverage'
+      dir: paths.coverage
     }));
 });
 
-gulp.task('clean-scripts', () => {
+gulp.task('clean:dist', () => {
   return gulp.src(paths.dist, {read: false})
     .pipe(clean({
       force: true
     }));
 });
 
-gulp.task('build', ['clean-scripts'], () => {
+gulp.task('build', ['clean:dist'], () => {
   return gulp.src(paths.files)
     .pipe(babel({
       presets: ['es2015']
@@ -68,7 +81,7 @@ gulp.task('build', ['clean-scripts'], () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['build'], shell.task(['npm start']));
+gulp.task('default', ['build'], shell.task(['npm run dev']));
 gulp.task('test', ['test:server', 'codacy']);
 gulp.task('lint', ['eslint']);
-gulp.task('clean', ['clean-scripts']);
+gulp.task('clean', ['clean:dist']);
